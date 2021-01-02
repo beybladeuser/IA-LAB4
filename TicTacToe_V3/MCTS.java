@@ -185,7 +185,10 @@ public class MCTS {
 		}
 		
 		public String toString() {
-			return value.toString();
+			String result = value.toString();
+			result += "V = " + V + "\n";
+			result += "W = " + W + "\n";
+			return result;
 		}
 		
 	}
@@ -196,9 +199,9 @@ public class MCTS {
 	private int maxNSimulations;
 
 	public MCTS() {
-		this.c = 1;
+		this.c = 0.5;
 		this.maxNCycles = 50;
-		this.maxNSimulations = 50;
+		this.maxNSimulations = 500;
 	}
 	
 	public MCTS(double c, int maxNCycles,int maxNSimulations) {
@@ -209,16 +212,20 @@ public class MCTS {
 	
 	public ILayout MCTSSearch(ILayout rootLayout) {
 		Node root = new Node(rootLayout, null);
-		int currentN = 0;
-		while (currentN < maxNCycles) {
+		//long startTime = System.currentTimeMillis();
+		//while (System.currentTimeMillis() - startTime < maxNCycles) {
+		int currentNCycles = 0;
+		while (currentNCycles < maxNCycles) {
 			Node Vi = TreePolicy(root);
 			Node ViSucc = Vi.getSuccessor();
 			for (int i = 0; i < maxNSimulations; i++) {
 				double delta = DefaultPolicy(ViSucc);
 				BackUp(Vi, delta);
 			}
-			currentN++;
+			currentNCycles++;
 		}
+		//System.out.println("Total Visits = " + root.V);
+		//System.out.println("ExecTime = " + (System.currentTimeMillis() - startTime) );
 		return root.getBestChild(c).value;
 	}
 	

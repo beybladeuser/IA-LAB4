@@ -12,6 +12,7 @@ public class TicTacToeBoard implements ILayout, Cloneable {
 	private int lastPlayer = 0;
 	private int n = 3;
 	private int nPlays = 0;
+	private int firstPlayer = 1;
 	
 	private List<Integer> playablePos;
 	
@@ -36,6 +37,7 @@ public class TicTacToeBoard implements ILayout, Cloneable {
 		playablePos = new ArrayList<Integer>();
 		board = parseState(tempBoard);
 		lastPlayer = firstPlayer % 2 + 1;
+		this.firstPlayer = firstPlayer;
 	}
 	
 	/**
@@ -63,6 +65,7 @@ public class TicTacToeBoard implements ILayout, Cloneable {
 		playablePos = new ArrayList<Integer>();
 		board = parseState(tempBoard);
 		lastPlayer = firstPlayer % 2 + 1;
+		this.firstPlayer = firstPlayer;
 	}
 	
 	/**
@@ -72,7 +75,7 @@ public class TicTacToeBoard implements ILayout, Cloneable {
 	public double getDefaultPolicy() {
 		int winner = getWinner();
 		if(winner == 0) {
-			return nPlays % 2 == 1 ? 0.1 : 0.6;
+			return firstPlayer == 1 ? 0.1 : 0.6;
 		}
 		if(winner == 1) {
 			return 1;

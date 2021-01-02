@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 
 class MCTSTest {
 
-	double SimpleTests_c = 0.3; 
-	int SimpleTests_maxNCycles = 100; 
+	double SimpleTests_c = 0.5; 
+	int SimpleTests_maxNCycles = 50; 
 	int SimpleTests_maxNSims = 500;
 	
 	@Test
@@ -114,6 +114,23 @@ class MCTSTest {
 		
 	}
 	
+	//if c = 0.5 , NCycles = 50 and NSims = 500 this fails
+	@Test
+	void testSolveSimple6() {
+		MCTS testee = new MCTS(
+				SimpleTests_c, 
+				SimpleTests_maxNCycles, 
+				SimpleTests_maxNSims
+			);
+		
+		String init = "X--\n---\n---\n";
+		TicTacToeBoard board = new TicTacToeBoard(init,1);
+		TicTacToeBoard actual = (TicTacToeBoard)testee.MCTSSearch(board);
+		TicTacToeBoard expected = board.cloneAndPlayAt(4);
+		assertEquals(expected, actual);
+		
+	}
+	
 	@Test
 	void testOneFullGame() {
 		MCTS testee_pl1 = new MCTS(
@@ -165,7 +182,7 @@ class MCTSTest {
 			
 	}
 	
-	@Test
+	//@Test
 	void testSolveComplex() {
 		
 		//test0 (1, 50, 50) v (1, 50, 50)
@@ -247,7 +264,7 @@ class MCTSTest {
 		int pl1_wins = 0;
 		int pl2_wins = 0;
 		int draws = 0;
-		int nTests = 200;
+		int nTests = 50;
 		
 		for (int i = 0; i < nTests; i++) {
 			TicTacToeBoard board = new TicTacToeBoard(1);
