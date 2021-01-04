@@ -3,7 +3,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class MCTS {
-	static class Node {
+	private static class Node {
 		private ILayout value;
 		private Node parent;
 		private List<Node> successors;
@@ -56,7 +56,7 @@ public class MCTS {
 		
 		/**
 		 * 
-		 * @return a non simulated successor
+		 * @return returns a non simulated successor
 		 */
 		public Node getSuccessor() {
 			if (successors.size() == 0 && getDefaultPolicy() == -1) {
@@ -178,7 +178,7 @@ public class MCTS {
 		
 		/**
 		 * 
-		 * @return true if all possible children have been simulated
+		 * @return returns true if all possible children have been simulated
 		 */
 		public boolean isFullyExpanded() {
 			return successors.size() == SimulatedSucc && successors.size() != 0;
@@ -198,18 +198,38 @@ public class MCTS {
 	private int maxNCycles;
 	private int maxNSimulations;
 
+	/**
+	 * 
+	 * @inv c == 0.5
+	 * @inv maxNCycles == 50
+	 * @inv maxNSimulations == 500
+	 */
 	public MCTS() {
 		this.c = 0.5;
 		this.maxNCycles = 50;
 		this.maxNSimulations = 500;
 	}
 	
+	/**
+	 * 
+	 * @param c the exploration Parameter
+	 * @param maxNCycles the max number of expansions
+	 * @param maxNSimulations the max number of simulations per expansion
+	 * @inv this.c == c
+	 * @inv this.maxNCycles == maxNCycles
+	 * @inv this.maxNSimulations == maxNSimulations
+	 */
 	public MCTS(double c, int maxNCycles,int maxNSimulations) {
 		this.c = c;
 		this.maxNCycles = maxNCycles;
 		this.maxNSimulations = maxNSimulations;
 	}
 	
+	/**
+	 * Executes the MCTS algorithm on the layout rootLayout
+	 * @param rootLayout The initial state to start the search
+	 * @return returns the successor of rootLayout that has the best chance to win
+	 */
 	public ILayout MCTSSearch(ILayout rootLayout) {
 		Node root = new Node(rootLayout, null);
 		//long startTime = System.currentTimeMillis();
@@ -229,6 +249,11 @@ public class MCTS {
 		return root.getBestChild(c).value;
 	}
 	
+	/**
+	 * Implements the selection phase
+	 * @param node the layout to select the most promising leaf successor
+	 * @return returns the must promising leaf node
+	 */
 	private Node TreePolicy(Node node) {
 		int count = 0;
 		Node temp = node;
@@ -244,6 +269,11 @@ public class MCTS {
 		return temp;
 	}
 	
+	/**
+	 * Implements the simulation phase and starts the backpropagation phase 
+	 * @param node the expanded node to be simulated
+	 * @return returns a value between 0 and 1 that is the result of the simulation(that is 0 means that the simulation resulted in a loss and 1 means that it resulted in a win)
+	 */
 	private double DefaultPolicy(Node node) {
 		Node simulatedNode = Simulate(node);
 		double result = simulatedNode.getDefaultPolicy();
@@ -251,6 +281,11 @@ public class MCTS {
 		return result;
 	}
 	
+	/**
+	 * Implements the simulation phase
+	 * @param node the expanded node to be simulated
+	 * @return returns the terminal state resulting of the simulation
+	 */
 	private Node Simulate(Node node) {
 		Node temp = node;
 		while (temp.getDefaultPolicy() == -1) {
@@ -259,6 +294,11 @@ public class MCTS {
 		return temp;
 	}
 	
+	/**
+	 * Implements the backpropagation phase
+	 * @param node the last node in the path to backpropagate
+	 * @param delta the return of the method DefaultPolicy(Node node)
+	 */
 	private void BackUp(Node node, double delta) {
 		Node temp = node;
 		while(temp != null) {

@@ -139,6 +139,6 @@ public class Main {
 	public static void main(String[] args) {
 //		//BotSecondPlayer(0.5, 50, 500);
 //		BotFirstPlayer(0.5, 50, 500);
-		playGame(20, 2, 0.5, 50, 500);
+		playGame(20, 2, 0.5, 100, 500);
 	}
 }
